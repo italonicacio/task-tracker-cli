@@ -4,32 +4,18 @@
 #include <algorithm>
 #include <filesystem>
 
+
+#include "commands.hpp"
 #include "status.hpp"
 #include "task.hpp"
 #include "repository/ITaskRepository.hpp"
 #include "repository/TaskRepositoryInMemory.hpp"
 #include "operations/TaskOperations.hpp"
-
+#include "managers/TaskManager.hpp"
 
 bool IsValidArgument(auto valid_arguments, std::string& argument) {
 	return std::find(valid_arguments.begin(), valid_arguments.end(), argument) != valid_arguments.end();
 }
-
-bool IsThisArgument(const std::string& selected_argument, const std::string& argument) {
-	return selected_argument == argument;
-}
-
-
-constexpr const char* ADD_OP = "add";
-constexpr const char* UPDATE_OP = "update";
-constexpr const char* DELETE_OP = "delete";
-constexpr const char* MARK_IN_PROGRESS_OP = "mark-in-progress";
-constexpr const char* MARK_DONE_OP = "mark-done";
-constexpr const char* LIST_OP = "list";
-constexpr const char* LIST_DONE_OP = "done";
-constexpr const char* LIST_TODO_OP = "todo";
-constexpr const char* LIST_IN_PROGRESS_OP = "in-progress";
-
 
 int main(int argc, char *argv[]) {
 	std::vector<std::string> arguments;
@@ -80,95 +66,16 @@ int main(int argc, char *argv[]) {
 
 	TaskOperations task_op(repository);
 	
-	if (IsThisArgument(ADD_OP, operation)) {
-		if (argc < 3) {
-			std::println(stderr, "Está faltando a descrição da operação add");
-			return 1;
-		}
-		
-		std::string description(argv[2]);
-		std::error_code err_code = task_op.Add(description);
+	TaskManager manager(task_op);
 
-		if (err_code) {
-			std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
-			return 1;
-		}
+	std::error_code err_code = manager.HandleOperation(operation, argc, argv);
 
+	if (err_code) {
+		std::println("Aconteceu um erro durante a execução da operação {}", operation);
+		std::println("Error {}: {}", err_code.value(), err_code.message());
 	}
+ 
 
-	if (IsThisArgument(UPDATE_OP, operation)) {
-		if (argc < 4) {
-			std::println(stderr, "Está faltando o id da task ou a nova descrição da operação update");
-			return 1;
-		}
-
-		unsigned int id = std::stoul(argv[2]);
-		std::string new_description(argv[3]);
-
-		std::error_code err_code = task_op.Update(id, new_description);
-
-		if(err_code) {
-			std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
-			return 1;
-		}
-
-		std::println("Task com id {} foi atualizado", id); 
-		
-	}
-
-	if (IsThisArgument(DELETE_OP, operation)) {
-		if (argc < 3) {
-			std::println(stderr, "Está faltando o id da task na operação delete");
-			return 1;
-		}
-
-		unsigned int id = std::stoul(argv[2]);
-
-		std::error_code err_code = task_op.Delete(id);
-
-		if(err_code) {
-			std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
-			return 1;
-		}
-
-		std::println("Task com id {} deletado com sucesso", id); 
-	}
-	
-	if (IsThisArgument(MARK_IN_PROGRESS_OP, operation)) {
-		if (argc < 3) {
-			std::println(stderr, "Está faltando o id da task na operação mark-in-progress");
-			return 1;
-		}
-
-		unsigned int id = std::stoul(argv[2]);
-
-		std::error_code err_code = task_op.MarkInProgress(id);
-
-		if(err_code) {
-			std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
-			return 1;
-		}
-
-		std::println("Task com id {} em progresso", id); 
-	}
-
-	if (IsThisArgument(MARK_IN_PROGRESS_OP, operation)) {
-		if (argc < 3) {
-			std::println(stderr, "Está faltando o id da task na operação mark-done");
-			return 1;
-		}
-
-		unsigned int id = std::stoul(argv[2]);
-
-		std::error_code err_code = task_op.Delete(id);
-
-		if(err_code) {
-			std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
-			return 1;
-		}
-
-		std::println("Task com id {} foi finalizado", id); 
-	}
 
     return 0;
 }

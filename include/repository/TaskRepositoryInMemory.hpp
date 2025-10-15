@@ -5,7 +5,7 @@
 
 class TaskRepositoryInMemory : public ITaskRepository {
 public:
-	std::vector<Task> data {{1, "Teste", Status::todo, ClockT::now(), ClockT::now()}};
+	std::vector<Task> data;
 
 	std::pair<std::error_code, int> Add(std::string& description) override;
 
