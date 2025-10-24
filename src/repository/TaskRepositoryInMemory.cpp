@@ -89,3 +89,15 @@ std::error_code TaskRepositoryInMemory::MarkDone(std::size_t id) {
 
 	return std::error_code{};
 }
+
+std::pair<std::error_code, Task> TaskRepositoryInMemory::GetTask(std::size_t id) {
+	if(id <= 0) {
+		return std::make_pair(std::make_error_code(std::errc::invalid_argument), Task{});
+	}
+
+	if(id <= 0) {
+		return std::make_pair(std::make_error_code(std::errc::invalid_argument), Task{});
+	}
+
+	return std::make_pair(std::error_code{}, data[id - 1]);
+}

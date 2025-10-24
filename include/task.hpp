@@ -15,13 +15,14 @@ struct Task {
 	ClockT::time_point updateAt;
 
 	std::string ToJson() const {
-		return std::format(R"({{
-			"id": {}, 
-			"description": {}, 
-			"status": {}, 
-			"createdAt": {}, 
-			"updatedAt": {} 
-		}})", 
+		return std::format(
+R"({{
+	"id": {}, 
+	"description": "{}", 
+	"status": "{}", 
+	"createdAt": {}, 
+	"updatedAt": {} 
+}})", 
 		id, 
 		description, 
 		StatusToString(status), 
@@ -31,7 +32,8 @@ struct Task {
 };
 
 inline Task NewTask(unsigned int id, std::string description) {	
-	return Task{id, description, Status::todo, ClockT::now(), ClockT::now()};
+	ClockT::time_point time_now = ClockT::now();
+	return Task{id, description, Status::todo, time_now, time_now};
 }
 
 
