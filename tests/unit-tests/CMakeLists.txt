@@ -12,7 +12,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
+set(TEST_DATA_DIR "${CMAKE_BINARY_DIR}/test_data")
 
+configure_file(
+	"${CMAKE_CURRENT_SOURCE_DIR}/Environment.hpp.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/Environment.hpp"
+	@ONLY
+)
+
+file(MAKE_DIRECTORY ${TEST_DATA_DIR})
 
 include(GoogleTest)
 
@@ -20,6 +28,7 @@ add_executable(
     TaskTrackerTests
     RunTests.cpp
     TaskOperationsTest.cpp
+	TaskRepositoryFileSystemTest.cpp
 )
 
 target_link_libraries(TaskTrackerTests PRIVATE TaskTrackerCore GTest::gtest )
@@ -28,6 +37,7 @@ target_include_directories(
     TaskTrackerTests
     PRIVATE 
         ${CMAKE_SOURCE_DIR}/include 
+		${CMAKE_CURRENT_BINARY_DIR}
 )
 
 

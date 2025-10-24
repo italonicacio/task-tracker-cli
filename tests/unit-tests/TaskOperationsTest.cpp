@@ -29,3 +29,4 @@ TEST_F(TaskOperationsTest, ShouldBeAbleToAddATask) {
 	EXPECT_EQ(description, repository->data.back().description);
 	EXPECT_EQ(Status::todo, repository->data.back().status);
 }
+

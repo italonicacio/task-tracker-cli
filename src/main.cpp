@@ -9,7 +9,7 @@
 #include "status.hpp"
 #include "task.hpp"
 #include "repository/ITaskRepository.hpp"
-#include "repository/TaskRepositoryInMemory.hpp"
+#include "repository/TaskRepositoryFileSystem.hpp"
 #include "operations/TaskOperations.hpp"
 #include "managers/TaskManager.hpp"
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 		}
 	}	
 	
-	TaskRepositoryInMemory repository;
+	TaskRepositoryFileSystem repository(data_path);
 
 	TaskOperations task_op(repository);
 	

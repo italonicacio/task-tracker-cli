@@ -1,14 +1,14 @@
 #include "repository/TaskRepositoryInMemory.hpp"
 
 
-std::pair<std::error_code, int> TaskRepositoryInMemory::Add(std::string& description) {
-		int new_id = data.size() + 1;
+std::pair<std::error_code, std::size_t> TaskRepositoryInMemory::Add(std::string& description) {
+		std::size_t new_id = data.size() + 1;
 		data.emplace_back(NewTask(new_id, description));
 
 		return std::make_pair(std::error_code{}, new_id);
 	}	
 
-std::error_code TaskRepositoryInMemory::Update(unsigned int id, std::string& new_description) {
+std::error_code TaskRepositoryInMemory::Update(std::size_t id, std::string& new_description) {
 	if(id < 1) {
 		return std::make_error_code(std::errc::invalid_argument);
 	}
@@ -29,7 +29,7 @@ std::error_code TaskRepositoryInMemory::Update(unsigned int id, std::string& new
 	return std::error_code{};
 }
 
-std::error_code TaskRepositoryInMemory::Delete(unsigned int id) {
+std::error_code TaskRepositoryInMemory::Delete(std::size_t id) {
 	if(id < 1) {
 		return std::make_error_code(std::errc::invalid_argument);
 	}
@@ -48,7 +48,7 @@ std::error_code TaskRepositoryInMemory::Delete(unsigned int id) {
 	return std::error_code{};
 }
 
-std::error_code TaskRepositoryInMemory::MarkInProgress(unsigned int id) {
+std::error_code TaskRepositoryInMemory::MarkInProgress(std::size_t id) {
 	if(id < 1) {
 		return std::make_error_code(std::errc::invalid_argument);
 	}
@@ -69,7 +69,7 @@ std::error_code TaskRepositoryInMemory::MarkInProgress(unsigned int id) {
 	return std::error_code{};
 }
 
-std::error_code TaskRepositoryInMemory::MarkDone(unsigned int id) {
+std::error_code TaskRepositoryInMemory::MarkDone(std::size_t id) {
 	if(id < 1) {
 		return std::make_error_code(std::errc::invalid_argument);
 	}

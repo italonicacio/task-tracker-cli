@@ -1,0 +1,11 @@
+#pragma once
+
+#include <filesystem>
+
+namespace Environment {
+	constexpr const char* TEST_DATA_DIR = "@TEST_DATA_DIR@";
+
+	inline std::filesystem::path GetTestDataPath() {
+		return std::filesystem::path(TEST_DATA_DIR);
+	}
+}	

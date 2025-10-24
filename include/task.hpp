@@ -1,8 +1,9 @@
 #pragma once
 
 #include <chrono>
+#include <format>
 
-#include <status.hpp>
+#include "status.hpp"
 
 using ClockT = std::chrono::high_resolution_clock;
 
@@ -12,9 +13,25 @@ struct Task {
 	Status status;
 	ClockT::time_point createdAt;
 	ClockT::time_point updateAt;
+
+	std::string ToJson() const {
+		return std::format(R"({{
+			"id": {}, 
+			"description": {}, 
+			"status": {}, 
+			"createdAt": {}, 
+			"updatedAt": {} 
+		}})", 
+		id, 
+		description, 
+		StatusToString(status), 
+		createdAt.time_since_epoch().count(), 
+		updateAt.time_since_epoch().count());
+	}
 };
 
-inline Task NewTask(unsigned int id, std::string description) {
-	
+inline Task NewTask(unsigned int id, std::string description) {	
 	return Task{id, description, Status::todo, ClockT::now(), ClockT::now()};
 }
+
+
