@@ -2,6 +2,8 @@
 
 #include "Environment.hpp"
 
+#include <print>
+
 #include "repository/TaskRepositoryFileSystem.hpp"
 
 class TaskRepositoryFileSystemTest : public ::testing::Test {
@@ -29,7 +31,7 @@ TEST_F(TaskRepositoryFileSystemTest, ShouldBeAbleToAddATask) {
 	EXPECT_TRUE(std::filesystem::exists(data_dir_path/"1.json"));
 }
 
-TEST_F(TaskRepositoryFileSystemTest, ShoubBeAbleToDeleteAllFiles) {
+TEST_F(TaskRepositoryFileSystemTest, ShouldBeAbleToDeleteAllFiles) {
 	std::string description("description");
 
 	repository->Add(description);
@@ -42,7 +44,7 @@ TEST_F(TaskRepositoryFileSystemTest, ShoubBeAbleToDeleteAllFiles) {
 
 }
 
-TEST_F(TaskRepositoryFileSystemTest, ShouldntBeAbleToAddATaskWhenDirectoryDontExist) {
+TEST_F(TaskRepositoryFileSystemTest, ShouldNotBeAbleToAddATaskWhenDirectoryDoNotExist) {
 	std::filesystem::path not_a_dir("./test");
 	TaskRepositoryFileSystem repo(not_a_dir);
 	std::string description("description");
@@ -73,4 +75,57 @@ TEST_F(TaskRepositoryFileSystemTest, ShouldNotBeAbleToGetATask) {
 	auto [err, task] = repository->GetTask(1);
 
 	EXPECT_TRUE(err);
+}
+
+
+TEST_F(TaskRepositoryFileSystemTest, ShouldBeAbleToUpdateATask) {
+	std::string description("description");
+
+	repository->Add(description);
+	
+	std::string new_description("new description");
+	
+	std::error_code err = repository->Update(1, new_description);
+
+	auto [_, task] = repository->GetTask(1);
+
+	EXPECT_FALSE(err);
+	EXPECT_EQ(task.id, 1);
+	EXPECT_EQ(task.description, new_description);
+	EXPECT_EQ(task.status, Status::todo);
+	EXPECT_LT(task.createdAt, task.updateAt);
+}
+
+TEST_F(TaskRepositoryFileSystemTest, ShouldNotBeAbleToUpdateANonExistentTask) {	
+	std::string new_description("new description");
+	
+	std::error_code err = repository->Update(1, new_description);
+
+	EXPECT_TRUE(err);
+}
+
+TEST_F(TaskRepositoryFileSystemTest, ShouldNotBeAbleToOverwriteExistentTaskWhenNumberOfTasksEqualToIDTask) {
+	std::string description("description");
+
+	repository->Add(description);
+	repository->Add(description);
+	repository->Add(description);
+
+	repository->Delete(1);
+
+	auto [err, id] = repository->Add(description);
+	
+	EXPECT_FALSE(err);
+	EXPECT_TRUE(id != 3);
+
+	repository->Add(description);
+
+	repository->Delete(2);
+
+	std::tie(err, id) = repository->Add(description);
+
+	
+	EXPECT_FALSE(err);
+	EXPECT_TRUE(id != 4);
+
 }

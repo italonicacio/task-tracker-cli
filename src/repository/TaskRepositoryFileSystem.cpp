@@ -16,11 +16,25 @@ std::pair<std::error_code, std::size_t> TaskRepositoryFileSystem::Add(std::strin
 		return std::make_pair(std::make_error_code(std::errc::no_such_file_or_directory), 0);
 	}
 
+	
+	std::string filename;
+	std::filesystem::path filepath;
 	std::size_t new_id = this->number_tasks + 1;
-	Task t = NewTask(new_id, description);
+	std::size_t i = 1;
+	while(true) {
+		filename = std::format("{}.json", new_id);
+		filepath = this->data_dir_path / filename;
 
-	std::string filename(std::format("{}.json", new_id));
-	std::filesystem::path filepath = this->data_dir_path / filename;
+		if(!std::filesystem::exists(filepath)) {
+			break;
+		}
+
+		new_id = i;
+		++i;
+	}
+	
+	Task t = NewTask(new_id, description);
+	 
 
 	std::ofstream output_file(filepath);
 
@@ -36,11 +50,40 @@ std::pair<std::error_code, std::size_t> TaskRepositoryFileSystem::Add(std::strin
 }
 
 std::error_code TaskRepositoryFileSystem::Update(std::size_t id, std::string& new_description) {
+	auto [err, task] = GetTask(id);
+
+	if(err) {
+		return err;
+	}
+
+	task.description = new_description;
+	task.updateAt = ClockT::now();
+
+	std::string filename(std::format("{}.json", id));
+	std::filesystem::path filepath = this->data_dir_path / filename;
+	
+	std::ofstream output_file(filepath);
+
+	if(output_file.is_open()) {
+		output_file << task.ToJson();
+
+		output_file.close();
+	} else {
+		return std::make_error_code(std::errc::no_such_file_or_directory);
+	}
+
 	return std::error_code {};
 }
 
 std::error_code TaskRepositoryFileSystem::Delete(std::size_t id) {
-	return std::error_code {};
+	std::error_code err{};
+
+	std::string filename(std::format("{}.json", id));
+	std::filesystem::path filepath = this->data_dir_path / filename;
+
+	std::filesystem::remove(filepath, err);
+
+	return err;
 }
 
 std::error_code TaskRepositoryFileSystem::MarkInProgress(std::size_t id) {
@@ -96,7 +139,6 @@ std::pair<std::error_code, Task> TaskRepositoryFileSystem::GetTask(std::size_t i
 	ifs.close();
 	
 	std::string json = buffer.str(); 
-	std::println("json: {}", json);
 
 	std::size_t pos = json.find("\"id\":");
 

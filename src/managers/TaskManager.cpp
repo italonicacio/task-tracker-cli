@@ -58,7 +58,6 @@ std::error_code TaskManager::HandleUpdate(int argc, char *argv[]) {
 		std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
 	}
 
-	std::println("Task com id {} foi atualizado", id); 
 	return std::error_code{};
 }
 
@@ -74,8 +73,6 @@ std::error_code TaskManager::HandleDelete(int argc, char *argv[]) {
 	if(err_code) {
 		std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
 	}
-
-	std::println("Task com id {} deletado com sucesso", id); 
 
 	return std::error_code{};
 }
@@ -93,7 +90,6 @@ std::error_code TaskManager::HandleMarkInProgress(int argc, char *argv[]) {
 		std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
 	}
 
-	std::println("Task com id {} em progresso", id); 
 	return std::error_code{};
 }
 
@@ -110,6 +106,5 @@ std::error_code TaskManager::HandleMarkDone(int argc, char *argv[]) {
 		std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
 	}
 
-	std::println("Task com id {} foi finalizado", id); 
 	return std::error_code{};
 }
