@@ -18,6 +18,8 @@ public:
 
 	virtual std::error_code MarkDone(std::size_t id) = 0;
 
+	virtual std::pair<std::error_code, std::vector<Task>> ListAllTasks() = 0;
+
 	virtual std::pair<std::error_code, Task> GetTask(std::size_t id) = 0;
 
 };

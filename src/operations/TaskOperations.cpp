@@ -30,3 +30,7 @@ std::error_code TaskOperations::MarkInProgress(unsigned int id) {
 std::error_code TaskOperations::MarkDone(unsigned int id) {
 	return repository.MarkDone(id);
 }
+
+std::error_code TaskOperations::List() {
+	return repository.ListAllTasks();
+}

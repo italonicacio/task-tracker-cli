@@ -18,4 +18,6 @@ public:
 	std::error_code MarkInProgress(unsigned int id);
 
 	std::error_code MarkDone(unsigned int id);
+
+	std::error_code List();
 };

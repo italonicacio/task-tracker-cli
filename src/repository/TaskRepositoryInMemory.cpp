@@ -1,3 +1,5 @@
+#include <print>
+
 #include "repository/TaskRepositoryInMemory.hpp"
 
 
@@ -88,6 +90,16 @@ std::error_code TaskRepositoryInMemory::MarkDone(std::size_t id) {
 	t.updateAt = ClockT::now();
 
 	return std::error_code{};
+}
+
+std::pair<std::error_code, std::vector<Task>> TaskRepositoryInMemory::ListAllTasks() {
+	std::vector<Task> tasks;
+
+	for(const Task& t: this->data) {
+		tasks.emplace_back(t);
+	}
+
+	return std::make_pair(std::error_code{}, std::move(tasks));
 }
 
 std::pair<std::error_code, Task> TaskRepositoryInMemory::GetTask(std::size_t id) {

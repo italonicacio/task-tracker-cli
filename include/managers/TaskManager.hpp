@@ -15,5 +15,7 @@ public:
 	std::error_code HandleDelete(int argc, char *argv[]);
 	std::error_code HandleMarkInProgress(int argc, char *argv[]);
 	std::error_code HandleMarkDone(int argc, char *argv[]);
+	std::error_code HandleList(int argc, char *argv[]);
+
 
 };

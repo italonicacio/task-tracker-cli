@@ -26,6 +26,10 @@ std::error_code TaskManager::HandleOperation(std::string operation, int argc, ch
 		return HandleMarkDone(argc, argv);
 	}
 
+	if (IsThisOperation(LIST_DONE_OP), operation) {
+		return 
+	}
+
 	return std::make_error_code(std::errc::invalid_argument);
 }
 
@@ -108,3 +112,18 @@ std::error_code TaskManager::HandleMarkDone(int argc, char *argv[]) {
 
 	return std::error_code{};
 }
+
+std::error_code TaskManager::HandleList(int argc, char *argv[]) {
+	// if (argc < 3) {
+	// 	std::println(stderr, "Está faltando o id da task na operação mark-done");
+	// }
+
+	// std::error_code err_code = operation.List();
+
+	// if(err_code) {
+	// 	std::println("Operação não foi feita com sucesso: Error Code {} message {}", err_code.value(), err_code.message());
+	// }
+
+	return std::error_code{};
+}
+

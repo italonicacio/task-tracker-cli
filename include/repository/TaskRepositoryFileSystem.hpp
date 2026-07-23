@@ -23,6 +23,8 @@ public:
 
 	std::error_code MarkDone(std::size_t id) override;
 
+	std::pair<std::error_code, std::vector<Task>> ListAllTasks() override;
+
 	std::pair<std::error_code, Task> GetTask(std::size_t id) override;
 
 	bool CleanAllFiles();
